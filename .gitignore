@@ -1,4 +1,14 @@
-*
+# Blacklist files/folders in same directory as the .gitignore file
+/*
+
+# Whitelist some files
 !.gitignore
-#Contestant only need to share the RobotPlayer.java folder
-!/src
+!README.md
+!LICENSE
+
+# Ignore all files named .DS_Store or ending with .log
+**/.DS_Store
+**.log
+
+#whitelist the src folder for RobotPlayer.java
+!src/
