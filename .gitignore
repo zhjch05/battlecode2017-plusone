@@ -1,0 +1,4 @@
+*
+!.gitignore
+#Contestant only need to share the RobotPlayer.java folder
+!/src
