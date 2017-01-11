@@ -49,16 +49,19 @@ public strictfp class RobotPlayer {
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
             try {
 
+                //get Team location
+                //MapLocation archonLocation = rc.getInitialArchonLocations(rc.getTeam())[0];
+
                 // Generate a random direction
                 Direction dir = randomDirection();
 
                 // Randomly attempt to build a gardener in this direction
-                if (rc.canHireGardener(dir) && (new Random()).nextFloat() >= 0.10f) {
+                if (rc.canHireGardener(dir) && (new Random()).nextFloat() >= 0.20f) {
                     rc.hireGardener(dir);
                 }
 
                 // Move randomly
-                tryMove(randomDirection());
+                //tryMove(randomDirection());
 
                 // Broadcast archon's location for other robots on the team to know
                 MapLocation myLocation = rc.getLocation();
@@ -91,15 +94,21 @@ public strictfp class RobotPlayer {
                 MapLocation archonLoc = new MapLocation(xPos,yPos);
 
                 // Generate a random direction
-                Direction dir = randomDirection();
+                Direction dir = new Direction(archonLoc, rc.getLocation());
 
-                // Randomly attempt to build a soldier or lumberjack in this direction
+                // Randomly attempt to build a soldier in this direction
                 if (rc.canBuildRobot(RobotType.SOLDIER, dir)) {
                     rc.buildRobot(RobotType.SOLDIER, dir);
                 }
 
+
                 // Move randomly
-                tryMove(randomDirection());
+                tryMove(dir);
+
+                //shake
+//                if(rc.canShake()){
+//                    rc.shake();
+//                }
 
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
@@ -121,6 +130,9 @@ public strictfp class RobotPlayer {
             // Try/catch blocks stop unhandled exceptions, which cause your robot to explode
             try {
                 MapLocation myLocation = rc.getLocation();
+                int xPos = rc.readBroadcast(0);
+                int yPos = rc.readBroadcast(1);
+                MapLocation archonLoc = new MapLocation(xPos,yPos);
 
                 // See if there are any nearby enemy robots
                 RobotInfo[] robots = rc.senseNearbyRobots(-1, enemy);
@@ -132,10 +144,11 @@ public strictfp class RobotPlayer {
                         // ...Then fire a bullet in the direction of the enemy.
                         rc.fireSingleShot(rc.getLocation().directionTo(robots[0].location));
                     }
+                    tryMove(new Direction(rc.getLocation(), robots[0].location));
                 }
 
-                // Move randomly
-                tryMove(randomDirection());
+                // Move from base
+                tryMove(new Direction(archonLoc, rc.getLocation()));
 
                 // Clock.yield() makes the robot wait until the next turn, then it will perform this loop again
                 Clock.yield();
